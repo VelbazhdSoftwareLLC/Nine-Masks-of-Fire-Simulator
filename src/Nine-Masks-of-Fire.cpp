@@ -8,6 +8,7 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
 
 using namespace std;
@@ -48,7 +49,7 @@ int lines[20][5] = {
 	{0,2,0,2,0},
 };
 
-int baseReels[5][113] = {
+int baseGameReels[5][113] = {
 	{0,1,2,3,4,5,6,7,8,9,10},
 	{0,1,2,3,4,5,6,7,8,9,10},
 	{0,1,2,3,4,5,6,7,8,9,10},
@@ -56,7 +57,7 @@ int baseReels[5][113] = {
 	{0,1,2,3,4,5,6,7,8,9,10},
 };
 
-int freeReels[5][113] = {
+int freeSpinsReels[5][113] = {
 	{0,1,2,3,4,5,6,7,8,9,10},
 	{0,1,2,3,4,5,6,7,8,9,10},
 	{0,1,2,3,4,5,6,7,8,9,10},
@@ -218,6 +219,16 @@ long freeSpinsSymbolsHitFrequency[10][11] {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 };
 
+void print(int view[5][3]) {
+	for (int j = 0; j < 3; j++) {
+		for (int i = 0; i < 5; i++) {
+			cout << setw(4) << view[i][j];
+		}
+
+		cout << endl;
+	}
+}
+
 int *const freeSpins(int *const parameters) {
 	int index = rand() % 614;
 
@@ -227,7 +238,7 @@ int *const freeSpins(int *const parameters) {
 	return parameters;
 }
 
-void spin(int **const reels, int length) {
+void spin(int reels[5][113], int length) {
 	for (int i = 0, u, m, d; i < 5; i++) {
 		u = rand() % length;
 		m = u + 1;
@@ -245,10 +256,13 @@ void spin(int **const reels, int length) {
 int main() {
 	srand (time(NULL) );
 
-	int	wheel[2];
+	int wheel[2];
 	freeSpins(wheel);
 	cout << wheel[0] << endl;
 	cout << wheel[1] << endl;
+
+	spin(baseGameReels, 11);
+	print( view );
 
 	return 0;
 }
