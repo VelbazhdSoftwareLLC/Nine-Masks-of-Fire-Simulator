@@ -253,6 +253,112 @@ void spin(int reels[5][113], int length) {
 	}
 }
 
+int scatterWin() {
+	int numberOfScatters = 0;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (view[i][j] == 0) {
+				numberOfScatters++;
+			}
+		}
+	}
+
+	return paytable[numberOfScatters][0];
+}
+
+int freeSpinsWin() {
+	int numberOfScatters = 0;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (view[i][j] == 1) {
+				numberOfScatters++;
+			}
+		}
+	}
+
+	return paytable[numberOfScatters][1];
+}
+
+int differentSevensLineWin(int line[5], int multiplier) {
+	if (line[0] != 3 && line[0] != 4 && line[0] != 5) {
+		return 0;
+	}
+
+	int number = 0;
+	bool different = false;
+	for (int i = 0; i < 5; i++) {
+		if (line[i] != 3 && line[i] != 4 && line[i] != 5) {
+			break;
+		}
+
+		if (line[i] != line[0]) {
+			different = true;
+		}
+
+		number++;
+	}
+
+	if (different == false) {
+		return 0;
+	}
+
+	return paytable[number][6];
+}
+
+int wildLineWin(int line[5], int multiplier) {
+	if (line[0] != 2) {
+		return 0;
+	}
+
+	int number = 0;
+	for (int i = 0; i < 5; i++) {
+		if (line[i] != 2) {
+			break;
+		}
+
+		number++;
+	}
+
+	return paytable[number][2];
+}
+
+int lineWin(int line[5], int multiplier) {
+	int win1 = differentSevensLineWin(line, multiplier);
+	int win2 = wildLineWin(line, multiplier);
+
+	int symbol = line[0];
+	for (int i = 0; i < 5; i++) {
+		if (line[i] != 2) {
+			symbol = line[i];
+			break;
+		}
+	}
+
+	for (int i = 0; i < 5; i++) {
+		if (line[i] == 2) {
+			line[i] = symbol;
+		} else {
+			break;
+		}
+	}
+
+	int number = 0;
+	for (int i = 0; i < 5; i++) {
+		if (line[i] == symbol) {
+			number++;
+		} else {
+			break;
+		}
+	}
+	for (int i = number; i < 5; i++) {
+		line[i] = -1;
+	}
+
+	int win3 = paytable[number][symbol] * multiplier;
+
+	return max(max(win1, win2), win3);
+}
+
 int main() {
 	srand (time(NULL) );
 
