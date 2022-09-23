@@ -281,6 +281,7 @@ int freeSpinsWin() {
 
 int differentSevensLineWin(int &symbol, int line[5], int multiplier) {
 	if (line[0] != 3 && line[0] != 4 && line[0] != 5) {
+		symbol = -1;
 		return 0;
 	}
 
@@ -309,6 +310,7 @@ int differentSevensLineWin(int &symbol, int line[5], int multiplier) {
 
 int wildLineWin(int &symbol, int line[5], int multiplier) {
 	if (line[0] != 2) {
+		symbol = -1;
 		return 0;
 	}
 
@@ -393,6 +395,7 @@ int lineWin(int &symbol, int line[5], int multiplier) {
 		}
 	}
 
+	symbol = -1;
 	return 0;
 }
 
