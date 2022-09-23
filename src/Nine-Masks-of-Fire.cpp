@@ -167,7 +167,7 @@ int view[5][3] = {
 	{ -1, -1, -1 },
 };
 
-long baseGameSymbolsMoney[10][11] {
+long baseGameSymbolsMoney[10][11] = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
@@ -180,7 +180,7 @@ long baseGameSymbolsMoney[10][11] {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 };
 
-long baseGameSymbolsHitFrequency[10][11] {
+long baseGameSymbolsHitFrequency[10][11] = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
@@ -193,7 +193,7 @@ long baseGameSymbolsHitFrequency[10][11] {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 };
 
-long freeSpinsSymbolsMoney[10][11] {
+long freeSpinsSymbolsMoney[10][11] = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
@@ -206,7 +206,7 @@ long freeSpinsSymbolsMoney[10][11] {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 };
 
-long freeSpinsSymbolsHitFrequency[10][11] {
+long freeSpinsSymbolsHitFrequency[10][11] = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
@@ -279,7 +279,7 @@ int freeSpinsWin() {
 	return paytable[numberOfScatters][1];
 }
 
-int differentSevensLineWin(int line[5], int multiplier) {
+int differentSevensLineWin(int &symbol, int line[5], int multiplier) {
 	if (line[0] != 3 && line[0] != 4 && line[0] != 5) {
 		return 0;
 	}
@@ -299,13 +299,15 @@ int differentSevensLineWin(int line[5], int multiplier) {
 	}
 
 	if (different == false) {
+		symbol = -1;
 		return 0;
 	}
 
+	symbol = 6;
 	return paytable[number][6];
 }
 
-int wildLineWin(int line[5], int multiplier) {
+int wildLineWin(int &symbol, int line[5], int multiplier) {
 	if (line[0] != 2) {
 		return 0;
 	}
@@ -319,24 +321,27 @@ int wildLineWin(int line[5], int multiplier) {
 		number++;
 	}
 
+	symbol = 2;
 	return paytable[number][2];
 }
 
-int lineWin(int line[5], int multiplier) {
-	int win1 = differentSevensLineWin(line, multiplier);
-	int win2 = wildLineWin(line, multiplier);
+int lineWin(int &symbol, int line[5], int multiplier) {
+	int symbol1 = -1;
+	int symbol2 = -1;
+	int win1 = differentSevensLineWin(symbol1, line, multiplier);
+	int win2 = wildLineWin(symbol2, line, multiplier);
 
-	int symbol = line[0];
+	int symbol3 = line[0];
 	for (int i = 0; i < 5; i++) {
 		if (line[i] != 2) {
-			symbol = line[i];
+			symbol3 = line[i];
 			break;
 		}
 	}
 
 	for (int i = 0; i < 5; i++) {
 		if (line[i] == 2) {
-			line[i] = symbol;
+			line[i] = symbol3;
 		} else {
 			break;
 		}
@@ -344,19 +349,51 @@ int lineWin(int line[5], int multiplier) {
 
 	int number = 0;
 	for (int i = 0; i < 5; i++) {
-		if (line[i] == symbol) {
+		if (line[i] == symbol3) {
 			number++;
 		} else {
 			break;
 		}
 	}
-	for (int i = number; i < 5; i++) {
-		line[i] = -1;
+
+	int win3 = paytable[number][symbol3] * multiplier;
+
+	if (win1 > win2) {
+		if (win1 > win3) {
+			symbol = symbol1;
+			return win1;
+		} else if (win1 < win3) {
+			symbol = symbol3;
+			return win3;
+		} else {
+			symbol = symbol3;
+			return win3;
+		}
+	} else if (win1 < win2) {
+		if (win2 > win3) {
+			symbol = symbol2;
+			return win2;
+		} else if (win2 < win3) {
+			symbol = symbol3;
+			return win3;
+		} else {
+			symbol = symbol3;
+			return win3;
+		}
+	} else {
+		if (win1 > win3 && win2 > win3) {
+			symbol = symbol1;
+			return win1;
+		} else if (win1 < win3 && win2 < win3) {
+			symbol = symbol3;
+			return win3;
+		} else {
+			symbol = symbol3;
+			return win3;
+		}
 	}
 
-	int win3 = paytable[number][symbol] * multiplier;
-
-	return max(max(win1, win2), win3);
+	return 0;
 }
 
 int main() {
