@@ -27,42 +27,42 @@ int paytable[10][11] = {
 };
 
 int lines[20][5] = {
-	{1,1,1,1,1},
-	{0,0,0,0,0},
-	{2,2,2,2,2},
-	{0,1,2,1,0},
-	{2,1,0,1,2},
-	{0,0,1,0,0},
-	{2,2,1,2,2},
-	{1,2,2,2,1},
-	{1,0,0,0,1},
-	{1,0,1,0,1},
-	{1,2,1,2,1},
-	{0,1,0,1,0},
-	{2,1,2,1,2},
-	{1,1,0,1,1},
-	{1,1,2,1,1},
-	{0,1,1,1,0},
-	{2,1,1,1,2},
-	{2,0,0,0,2},
-	{0,2,2,2,0},
-	{0,2,0,2,0},
+	{ 1, 1, 1, 1, 1 },
+	{ 0, 0, 0, 0, 0 },
+	{ 2, 2, 2, 2, 2 },
+	{ 0, 1, 2, 1, 0 },
+	{ 2, 1, 0, 1, 2 },
+	{ 0, 0, 1, 0, 0 },
+	{ 2, 2, 1, 2, 2 },
+	{ 1, 2, 2, 2, 1 },
+	{ 1, 0, 0, 0, 1 },
+	{ 1, 0, 1, 0, 1 },
+	{ 1, 2, 1, 2, 1 },
+	{ 0, 1, 0, 1, 0 },
+	{ 2, 1, 2, 1, 2 },
+	{ 1, 1, 0, 1, 1 },
+	{ 1, 1, 2, 1, 1 },
+	{ 0, 1, 1, 1, 0 },
+	{ 2, 1, 1, 1, 2 },
+	{ 2, 0, 0, 0, 2 },
+	{ 0, 2, 2, 2, 0 },
+	{ 0, 2, 0, 2, 0 },
 };
 
 int baseGameReels[5][113] = {
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
 };
 
 int freeSpinsReels[5][113] = {
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
-	{0,1,2,3,4,5,6,7,8,9,10},
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
 };
 
 int freeSpinsWheel[2][614] = { { 30, 30, 30, 30, 30, 30, 30,
@@ -159,6 +159,8 @@ int freeSpinsAmount = 0;
 
 int freeSpinsMultiplier = 0;
 
+int freeSpinsRestartAmount = 0;
+
 int view[5][3] = {
 	{ -1, -1, -1 },
 	{ -1, -1, -1 },
@@ -229,15 +231,6 @@ void print(int view[5][3]) {
 	}
 }
 
-int *const freeSpins(int *const parameters) {
-	int index = rand() % 614;
-
-	parameters[0] = freeSpinsWheel[0][index];
-	parameters[1] = freeSpinsWheel[1][index];
-
-	return parameters;
-}
-
 void spin(int reels[5][113], int length) {
 	for (int i = 0, u, m, d; i < 5; i++) {
 		u = rand() % length;
@@ -279,13 +272,14 @@ int freeSpinsWin() {
 	return paytable[numberOfScatters][1];
 }
 
-int differentSevensLineWin(int &symbol, int line[5], int multiplier) {
+int differentSevensLineWin(int &number, int &symbol, int line[5],
+		int multiplier) {
 	if (line[0] != 3 && line[0] != 4 && line[0] != 5) {
 		symbol = -1;
 		return 0;
 	}
 
-	int number = 0;
+	number = 0;
 	bool different = false;
 	for (int i = 0; i < 5; i++) {
 		if (line[i] != 3 && line[i] != 4 && line[i] != 5) {
@@ -308,13 +302,13 @@ int differentSevensLineWin(int &symbol, int line[5], int multiplier) {
 	return paytable[number][6];
 }
 
-int wildLineWin(int &symbol, int line[5], int multiplier) {
+int wildLineWin(int &number, int &symbol, int line[5], int multiplier) {
 	if (line[0] != 2) {
 		symbol = -1;
 		return 0;
 	}
 
-	int number = 0;
+	number = 0;
 	for (int i = 0; i < 5; i++) {
 		if (line[i] != 2) {
 			break;
@@ -327,11 +321,13 @@ int wildLineWin(int &symbol, int line[5], int multiplier) {
 	return paytable[number][2];
 }
 
-int lineWin(int &symbol, int line[5], int multiplier) {
+int lineWin(int &number, int &symbol, int line[5], int multiplier) {
+	int number1 = 0;
+	int number2 = 0;
 	int symbol1 = -1;
 	int symbol2 = -1;
-	int win1 = differentSevensLineWin(symbol1, line, multiplier);
-	int win2 = wildLineWin(symbol2, line, multiplier);
+	int win1 = differentSevensLineWin(number1, symbol1, line, multiplier);
+	int win2 = wildLineWin(number2, symbol2, line, multiplier);
 
 	int symbol3 = line[0];
 	for (int i = 0; i < 5; i++) {
@@ -349,52 +345,62 @@ int lineWin(int &symbol, int line[5], int multiplier) {
 		}
 	}
 
-	int number = 0;
+	int number3 = 0;
 	for (int i = 0; i < 5; i++) {
 		if (line[i] == symbol3) {
-			number++;
+			number3++;
 		} else {
 			break;
 		}
 	}
 
-	int win3 = paytable[number][symbol3] * multiplier;
+	int win3 = paytable[number3][symbol3] * multiplier;
 
 	if (win1 > win2) {
 		if (win1 > win3) {
+			number = number1;
 			symbol = symbol1;
 			return win1;
 		} else if (win1 < win3) {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		} else {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		}
 	} else if (win1 < win2) {
 		if (win2 > win3) {
+			number = number2;
 			symbol = symbol2;
 			return win2;
 		} else if (win2 < win3) {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		} else {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		}
 	} else {
 		if (win1 > win3 && win2 > win3) {
+			number = number1;
 			symbol = symbol1;
 			return win1;
 		} else if (win1 < win3 && win2 < win3) {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		} else {
+			number = number3;
 			symbol = symbol3;
 			return win3;
 		}
 	}
 
+	number = 0;
 	symbol = -1;
 	return 0;
 }
@@ -409,10 +415,17 @@ int linesWin(int multiplier) {
 			line[i] = view[i][index];
 		}
 
+		int number = 0;
 		int symbol = -1;
-		int result = lineWin(symbol, line, multiplier);
+		int result = lineWin(number, symbol, line, multiplier);
 
-		//TODO Collect statistics.
+		if (result > 0 && freeSpinsAmount == 0) {
+			baseGameSymbolsMoney[number][symbol] += result;
+			baseGameSymbolsHitFrequency[number][symbol]++;
+		} else if (win > 0 && freeSpinsAmount > 0) {
+			freeSpinsSymbolsMoney[number][symbol] += result;
+			freeSpinsSymbolsHitFrequency[number][symbol]++;
+		}
 
 		win += result;
 	}
@@ -420,16 +433,38 @@ int linesWin(int multiplier) {
 	return (win);
 }
 
-int main() {
-	srand (time(NULL) );
+void freeSpins(int &amount, int &multiplier) {
+	int index = rand() % 614;
 
-	int wheel[2];
-	freeSpins(wheel);
-	cout << wheel[0] << endl;
-	cout << wheel[1] << endl;
+	amount = freeSpinsWheel[0][index];
+	multiplier = freeSpinsWheel[1][index];
+}
+
+void freeSpinsSetup() {
+	int numberOfScatters = 0;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (view[i][j] == 1) {
+				numberOfScatters++;
+			}
+		}
+	}
+
+	if (numberOfScatters == 3 && freeSpinsAmount == 0) {
+		freeSpins(freeSpinsAmount, freeSpinsMultiplier);
+		freeSpinsRestartAmount = freeSpinsAmount;
+		totalNumberOfFreeSpinsStarts++;
+	} else if (numberOfScatters == 3 && freeSpinsAmount > 0) {
+		freeSpinsAmount += freeSpinsRestartAmount;
+		totalNumberOfFreeSpinsRestarts++;
+	}
+}
+
+int main() {
+	srand(time(NULL));
 
 	spin(baseGameReels, 11);
-	print( view );
+	print(view);
 
 	return 0;
 }
