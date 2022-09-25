@@ -256,7 +256,17 @@ int scatterWin() {
 		}
 	}
 
-	return paytable[numberOfScatters][0];
+	int win = paytable[numberOfScatters][0];
+
+	if (win > 0 && freeSpinsAmount == 0) {
+		baseGameSymbolsMoney[numberOfScatters][0] += win;
+		baseGameSymbolsHitFrequency[numberOfScatters][0]++;
+	} else if (win > 0 && freeSpinsAmount > 0) {
+		freeSpinsSymbolsMoney[numberOfScatters][0] += win;
+		freeSpinsSymbolsHitFrequency[numberOfScatters][0]++;
+	}
+
+	return win;
 }
 
 int freeSpinsWin() {
@@ -269,7 +279,17 @@ int freeSpinsWin() {
 		}
 	}
 
-	return paytable[numberOfScatters][1];
+	int win = paytable[numberOfScatters][1];
+
+	if (win > 0 && freeSpinsAmount == 0) {
+		baseGameSymbolsMoney[numberOfScatters][1] += win;
+		baseGameSymbolsHitFrequency[numberOfScatters][1]++;
+	} else if (win > 0 && freeSpinsAmount > 0) {
+		freeSpinsSymbolsMoney[numberOfScatters][1] += win;
+		freeSpinsSymbolsHitFrequency[numberOfScatters][1]++;
+	}
+
+	return win;
 }
 
 int differentSevensLineWin(int &number, int &symbol, int line[5],
@@ -460,11 +480,63 @@ void freeSpinsSetup() {
 	}
 }
 
+void singleFreeSpin() {
+	spin(freeSpinsReels, 113);
+
+	int win = linesWin(1) + scatterWin() + freeSpinsWin();
+
+	wonMoney += win;
+	freeSpinsMoney += win;
+	if (freeSpinsMaxWin < win) {
+		freeSpinsMaxWin = win;
+	}
+
+	if (win > 0) {
+		freeSpinsHitFrequency++;
+	}
+
+	freeSpinsSetup();
+}
+
+void singleBaseGame() {
+	spin(baseGameReels, 113);
+
+	int win = linesWin(1) + scatterWin() + freeSpinsWin();
+
+	wonMoney += win;
+	baseGameMoney += win;
+	if (baseGameMaxWin < win) {
+		baseGameMaxWin = win;
+	}
+
+	if (win > 0) {
+		baseGameHitFrequency++;
+	}
+
+	freeSpinsAmount = 0;
+	freeSpinsMultiplier = 1;
+	freeSpinsRestartAmount = 0;
+	freeSpinsSetup();
+
+	while (freeSpinsAmount > 0) {
+		totalNumberOfFreeSpins++;
+		singleFreeSpin();
+		freeSpinsAmount--;
+	}
+}
+
+void monteCarloSimulation() {
+	for (long g = 0L; g < 100000000L; g++) {
+		totalNumberOfGames++;
+		lostMoney += totalBet;
+		singleBaseGame();
+	}
+}
+
 int main() {
 	srand(time(NULL));
 
-	spin(baseGameReels, 11);
-	print(view);
+	monteCarloSimulation();
 
 	return 0;
 }
