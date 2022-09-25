@@ -399,6 +399,27 @@ int lineWin(int &symbol, int line[5], int multiplier) {
 	return 0;
 }
 
+int linesWin(int multiplier) {
+	int win = 0;
+
+	for (int l = 0; l < 20; l++) {
+		int line[5] = { -1, -1, -1, -1, -1 };
+		for (int i = 0; i < 5; i++) {
+			int index = lines[l][i];
+			line[i] = view[i][index];
+		}
+
+		int symbol = -1;
+		int result = lineWin(symbol, line, multiplier);
+
+		//TODO Collect statistics.
+
+		win += result;
+	}
+
+	return (win);
+}
+
 int main() {
 	srand (time(NULL) );
 
