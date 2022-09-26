@@ -532,6 +532,279 @@ void monteCarloSimulation() {
 		totalNumberOfGames++;
 		lostMoney += totalBet;
 		singleBaseGame();
+
+		if (totalNumberOfGames % 10000 == 0) {
+			cerr << setw(6) << (double) wonMoney / (double) lostMoney << endl;
+		}
+	}
+}
+
+void printDataStructures() {
+	cout << "Paytable:" << endl;
+	for (int i = 0; i < 10; i++) {
+		cout << "\t" << i << " of";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout << paytable[i][j] << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	cout << "Lines:" << endl;
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 5; j++) {
+			cout << lines[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	cout << "Base Game Reels:" << endl;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 113; j++) {
+			if (j % 10 == 0) {
+				cout << endl;
+			}
+			cout << setw(4) << baseGameReels[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	cout << "Free Games Reels:" << endl;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 113; j++) {
+			if (j % 10 == 0) {
+				cout << endl;
+			}
+			cout << setw(4) << freeSpinsReels[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	cout << "Base Game Reels:" << endl;
+	{
+		int counters[5][11] = {
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		};
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 113; j++) {
+				counters[i][baseGameReels[i][j]]++;
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			cout << "\tReel " << (i + 1);
+		}
+		cout << endl;
+		for (int j = 0; j < 11; j++) {
+			cout << j << "\t";
+			for (int i = 0; i < 5; i++) {
+				cout << counters[i][j] << "\t";
+			}
+			cout << endl;
+		}
+		cout << "---------------------------------------------" << endl;
+		cout << "Total:\t";
+		long combinations = 1L;
+		for (int i = 0; i < 5; i++) {
+			int sum = 0;
+			for (int j = 0; j < 11; j++) {
+				sum += counters[i][j];
+			}
+			cout << sum << "\t";
+			if (sum != 0) {
+				combinations *= sum;
+			}
+		}
+		cout << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "Combinations:\t" + combinations;
+	}
+	cout << endl;
+
+	cout << "Free Games Reels:" << endl;
+	{
+		int counters[5][11] = {
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
+		};
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 113; j++) {
+				counters[i][freeSpinsReels[i][j]]++;
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+			cout << "\tReel " << (i + 1);
+		}
+		cout << endl;
+		for (int j = 0; j < 11; j++) {
+			cout << j << "\t";
+			for (int i = 0; i < 5; i++) {
+				cout << counters[i][j] << "\t";
+			}
+			cout << endl;
+		}
+		cout << "---------------------------------------------" << endl;
+		cout << "Total:\t";
+		long combinations = 1L;
+		for (int i = 0; i < 5; i++) {
+			int sum = 0;
+			for (int j = 0; j < 11; j++) {
+				sum += counters[i][j];
+			}
+			cout << sum << "\t";
+			if (sum != 0) {
+				combinations *= sum;
+			}
+		}
+		cout << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "Combinations:\t" << combinations;
+	}
+	cout << endl;
+}
+
+void printStatistics() {
+	cout << "Won money:\t" << wonMoney << endl;
+	cout << "Lost money:\t" << lostMoney << endl;
+	cout << "Total Number of Games:\t" << totalNumberOfGames << endl;
+	cout << endl;
+	cout << "Total RTP:\t" << ((double) wonMoney / (double) lostMoney) << "\t\t"
+			<< (100.0D * (double) wonMoney / (double) lostMoney) << "%" << endl;
+	cout << "Base Game RTP:\t" << ((double) baseGameMoney / (double) lostMoney)
+			<< "\t\t" << (100.0D * (double) baseGameMoney / (double) lostMoney)
+			<< "%" << endl;
+	cout << "Free Game RTP:\t" << ((double) freeSpinsMoney / (double) lostMoney)
+			<< "\t\t" << (100.0D * (double) freeSpinsMoney / (double) lostMoney)
+			<< "%" << endl;
+	cout << endl;
+	cout << "Hit Rate in Base Game:\t"
+			<< ((double) baseGameHitFrequency / (double) totalNumberOfGames)
+			<< "\t\t"
+			<< (100.0D * (double) baseGameHitFrequency
+					/ (double) totalNumberOfGames) << "%" << endl;
+	cout << "Hit Rate in Free Game:\t"
+			<< ((double) freeSpinsHitFrequency / (double) totalNumberOfFreeSpins)
+			<< "\t\t"
+			<< (100.0D * (double) freeSpinsHitFrequency
+					/ (double) totalNumberOfFreeSpins) << "%" << endl;
+	cout << "Hit Rate Base Game into Free Game:\t"
+			<< ((double) totalNumberOfFreeSpinsStarts
+					/ (double) totalNumberOfGames) << "\t\t"
+			<< (100.0D * (double) (totalNumberOfFreeSpinsStarts)
+					/ (double) totalNumberOfGames) << "%" << endl;
+	cout << "Hit Rate Free Game into Free Game:\t"
+			<< ((double) totalNumberOfFreeSpinsRestarts
+					/ (double) totalNumberOfFreeSpinsStarts) << "\t\t"
+			<< (100.0D * (double) (totalNumberOfFreeSpinsRestarts)
+					/ (double) totalNumberOfFreeSpinsStarts) << "%" << endl;
+	cout << endl;
+	cout << "Max Win in Base Game:\t" << baseGameMaxWin << endl;
+	cout << "Max Win in Free Game:\t" << freeSpinsMaxWin << endl;
+
+	cout << endl;
+	cout << endl;
+	cout << "Base Game Symbols RTP:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout << (double) baseGameSymbolsMoney[i][j] / (double) lostMoney
+					<< "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	cout << "Base Game Symbols Hit Frequency:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout << (double) baseGameSymbolsHitFrequency[i][j] << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	cout << "Base Game Symbols Hit Rate:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout
+					<< (double) baseGameSymbolsHitFrequency[i][j]
+							/ (double) totalNumberOfGames << "\t";
+		}
+		cout << endl;
+	}
+
+	cout << endl;
+	cout << "Free Games Symbols RTP:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout << (double) freeSpinsSymbolsMoney[i][j] / (double) lostMoney
+					<< "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	cout << "Free Games Symbols Hit Frequency:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout << (double) freeSpinsSymbolsHitFrequency[i][j] << "\t";
+		}
+		cout << endl;
+	}
+	cout << endl;
+	cout << "Free Games Symbols Hit Rate:" << endl;
+	cout << "\t";
+	for (int i = 0; i < 10; i++) {
+		cout << i << "of\t";
+	}
+	cout << endl;
+	for (int j = 0; j < 11; j++) {
+		cout << j << "\t";
+		for (int i = 0; i < 10; i++) {
+			cout
+					<< (double) freeSpinsSymbolsHitFrequency[i][j]
+							/ (double) totalNumberOfGames << "\t";
+		}
+		cout << endl;
 	}
 }
 
@@ -539,6 +812,12 @@ int main() {
 	srand(time(NULL));
 
 	monteCarloSimulation();
+
+	printDataStructures();
+	cout << endl;
+
+	printStatistics();
+	cout << endl;
 
 	return 0;
 }
