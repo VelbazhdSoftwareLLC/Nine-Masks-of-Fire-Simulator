@@ -483,16 +483,17 @@ void freeSpinsSetup() {
 void singleFreeSpin() {
 	spin(freeSpinsReels, 113);
 
-	int win = linesWin(1) + scatterWin() + freeSpinsWin();
+	int win = linesWin(freeSpinsMultiplier) + scatterWin() + freeSpinsWin();
 
 	wonMoney += win;
 	freeSpinsMoney += win;
-	if (freeSpinsMaxWin < win) {
-		freeSpinsMaxWin = win;
-	}
 
 	if (win > 0) {
 		freeSpinsHitFrequency++;
+	}
+
+	if (freeSpinsMaxWin < win) {
+		freeSpinsMaxWin = win;
 	}
 
 	freeSpinsSetup();
@@ -505,12 +506,13 @@ void singleBaseGame() {
 
 	wonMoney += win;
 	baseGameMoney += win;
-	if (baseGameMaxWin < win) {
-		baseGameMaxWin = win;
-	}
 
 	if (win > 0) {
 		baseGameHitFrequency++;
+	}
+
+	if (baseGameMaxWin < win) {
+		baseGameMaxWin = win;
 	}
 
 	freeSpinsAmount = 0;
