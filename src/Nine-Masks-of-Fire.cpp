@@ -534,7 +534,7 @@ void monteCarloSimulation() {
 		singleBaseGame();
 
 		if (totalNumberOfGames % 10000 == 0) {
-			cerr << setw(6) << (double) wonMoney / (double) lostMoney << endl;
+			cerr << (double) wonMoney / (double) lostMoney << endl;
 		}
 	}
 }
@@ -566,22 +566,16 @@ void printDataStructures() {
 	cout << "Base Game Reels:" << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 113; j++) {
-			if (j % 10 == 0) {
-				cout << endl;
-			}
-			cout << setw(4) << baseGameReels[i][j] << " ";
+			cout << setw(3) << baseGameReels[i][j];
 		}
 		cout << endl;
 	}
 	cout << endl;
 
-	cout << "Free Games Reels:" << endl;
+	cout << "Free Spins Reels:" << endl;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 113; j++) {
-			if (j % 10 == 0) {
-				cout << endl;
-			}
-			cout << setw(4) << freeSpinsReels[i][j] << " ";
+			cout << setw(3) << freeSpinsReels[i][j];
 		}
 		cout << endl;
 	}
@@ -631,7 +625,7 @@ void printDataStructures() {
 	}
 	cout << endl;
 
-	cout << "Free Games Reels:" << endl;
+	cout << "Free Spins Reels:" << endl;
 	{
 		int counters[5][11] = {
 			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
@@ -674,6 +668,15 @@ void printDataStructures() {
 		cout << "Combinations:\t" << combinations;
 	}
 	cout << endl;
+	cout << endl;
+
+	cout << "Free Spins Wheel:" << endl;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 614; j++) {
+			cout << setw(3) << freeSpinsWheel[i][j];
+		}
+		cout << endl;
+	}
 }
 
 void printStatistics() {
@@ -686,7 +689,7 @@ void printStatistics() {
 	cout << "Base Game RTP:\t" << ((double) baseGameMoney / (double) lostMoney)
 			<< "\t\t" << (100.0D * (double) baseGameMoney / (double) lostMoney)
 			<< "%" << endl;
-	cout << "Free Game RTP:\t" << ((double) freeSpinsMoney / (double) lostMoney)
+	cout << "Free Spins RTP:\t" << ((double) freeSpinsMoney / (double) lostMoney)
 			<< "\t\t" << (100.0D * (double) freeSpinsMoney / (double) lostMoney)
 			<< "%" << endl;
 	cout << endl;
@@ -695,24 +698,24 @@ void printStatistics() {
 			<< "\t\t"
 			<< (100.0D * (double) baseGameHitFrequency
 					/ (double) totalNumberOfGames) << "%" << endl;
-	cout << "Hit Rate in Free Game:\t"
+	cout << "Hit Rate in Free Spins:\t"
 			<< ((double) freeSpinsHitFrequency / (double) totalNumberOfFreeSpins)
 			<< "\t\t"
 			<< (100.0D * (double) freeSpinsHitFrequency
 					/ (double) totalNumberOfFreeSpins) << "%" << endl;
-	cout << "Hit Rate Base Game into Free Game:\t"
+	cout << "Hit Rate Base Game into Free Spins:\t"
 			<< ((double) totalNumberOfFreeSpinsStarts
 					/ (double) totalNumberOfGames) << "\t\t"
 			<< (100.0D * (double) (totalNumberOfFreeSpinsStarts)
 					/ (double) totalNumberOfGames) << "%" << endl;
-	cout << "Hit Rate Free Game into Free Game:\t"
+	cout << "Hit Rate Free Spins into Free Spins:\t"
 			<< ((double) totalNumberOfFreeSpinsRestarts
 					/ (double) totalNumberOfFreeSpinsStarts) << "\t\t"
 			<< (100.0D * (double) (totalNumberOfFreeSpinsRestarts)
 					/ (double) totalNumberOfFreeSpinsStarts) << "%" << endl;
 	cout << endl;
 	cout << "Max Win in Base Game:\t" << baseGameMaxWin << endl;
-	cout << "Max Win in Free Game:\t" << freeSpinsMaxWin << endl;
+	cout << "Max Win in Free Spins:\t" << freeSpinsMaxWin << endl;
 
 	cout << endl;
 	cout << endl;
@@ -762,7 +765,7 @@ void printStatistics() {
 	}
 
 	cout << endl;
-	cout << "Free Games Symbols RTP:" << endl;
+	cout << "Free Spins Symbols RTP:" << endl;
 	cout << "\t";
 	for (int i = 0; i < 10; i++) {
 		cout << i << "of\t";
@@ -777,7 +780,7 @@ void printStatistics() {
 		cout << endl;
 	}
 	cout << endl;
-	cout << "Free Games Symbols Hit Frequency:" << endl;
+	cout << "Free Spins Symbols Hit Frequency:" << endl;
 	cout << "\t";
 	for (int i = 0; i < 10; i++) {
 		cout << i << "of\t";
@@ -791,7 +794,7 @@ void printStatistics() {
 		cout << endl;
 	}
 	cout << endl;
-	cout << "Free Games Symbols Hit Rate:" << endl;
+	cout << "Free Spins Symbols Hit Rate:" << endl;
 	cout << "\t";
 	for (int i = 0; i < 10; i++) {
 		cout << i << "of\t";
