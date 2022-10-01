@@ -528,7 +528,7 @@ void singleBaseGame() {
 }
 
 void monteCarloSimulation() {
-	for (long g = 0L; g < 100000000L; g++) {
+	for (long g = 0L; g < 1000000/*00L*/; g++) {
 		totalNumberOfGames++;
 		lostMoney += totalBet;
 		singleBaseGame();
@@ -621,7 +621,7 @@ void printDataStructures() {
 		}
 		cout << endl;
 		cout << "---------------------------------------------" << endl;
-		cout << "Combinations:\t" + combinations;
+		cout << "Combinations:\t" << combinations;
 	}
 	cout << endl;
 
@@ -685,33 +685,33 @@ void printStatistics() {
 	cout << "Total Number of Games:\t" << totalNumberOfGames << endl;
 	cout << endl;
 	cout << "Total RTP:\t" << ((double) wonMoney / (double) lostMoney) << "\t\t"
-			<< (100.0D * (double) wonMoney / (double) lostMoney) << "%" << endl;
+			<< (100.0 * (double) wonMoney / (double) lostMoney) << "%" << endl;
 	cout << "Base Game RTP:\t" << ((double) baseGameMoney / (double) lostMoney)
-			<< "\t\t" << (100.0D * (double) baseGameMoney / (double) lostMoney)
+			<< "\t\t" << (100.0 * (double) baseGameMoney / (double) lostMoney)
 			<< "%" << endl;
 	cout << "Free Spins RTP:\t" << ((double) freeSpinsMoney / (double) lostMoney)
-			<< "\t\t" << (100.0D * (double) freeSpinsMoney / (double) lostMoney)
+			<< "\t\t" << (100.0 * (double) freeSpinsMoney / (double) lostMoney)
 			<< "%" << endl;
 	cout << endl;
 	cout << "Hit Rate in Base Game:\t"
 			<< ((double) baseGameHitFrequency / (double) totalNumberOfGames)
 			<< "\t\t"
-			<< (100.0D * (double) baseGameHitFrequency
+			<< (100.0 * (double) baseGameHitFrequency
 					/ (double) totalNumberOfGames) << "%" << endl;
 	cout << "Hit Rate in Free Spins:\t"
 			<< ((double) freeSpinsHitFrequency / (double) totalNumberOfFreeSpins)
 			<< "\t\t"
-			<< (100.0D * (double) freeSpinsHitFrequency
+			<< (100.0 * (double) freeSpinsHitFrequency
 					/ (double) totalNumberOfFreeSpins) << "%" << endl;
 	cout << "Hit Rate Base Game into Free Spins:\t"
 			<< ((double) totalNumberOfFreeSpinsStarts
 					/ (double) totalNumberOfGames) << "\t\t"
-			<< (100.0D * (double) (totalNumberOfFreeSpinsStarts)
+			<< (100.0 * (double) (totalNumberOfFreeSpinsStarts)
 					/ (double) totalNumberOfGames) << "%" << endl;
 	cout << "Hit Rate Free Spins into Free Spins:\t"
 			<< ((double) totalNumberOfFreeSpinsRestarts
 					/ (double) totalNumberOfFreeSpinsStarts) << "\t\t"
-			<< (100.0D * (double) (totalNumberOfFreeSpinsRestarts)
+			<< (100.0 * (double) (totalNumberOfFreeSpinsRestarts)
 					/ (double) totalNumberOfFreeSpinsStarts) << "%" << endl;
 	cout << endl;
 	cout << "Max Win in Base Game:\t" << baseGameMaxWin << endl;
