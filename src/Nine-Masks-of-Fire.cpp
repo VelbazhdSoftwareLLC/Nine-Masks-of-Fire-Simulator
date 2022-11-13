@@ -319,7 +319,7 @@ int differentSevensLineWin(int &number, int &symbol, int line[5],
 	}
 
 	symbol = 6;
-	return paytable[number][6];
+	return paytable[number][6] * multiplier;
 }
 
 int wildLineWin(int &number, int &symbol, int line[5], int multiplier) {
@@ -338,10 +338,18 @@ int wildLineWin(int &number, int &symbol, int line[5], int multiplier) {
 	}
 
 	symbol = 2;
-	return paytable[number][2];
+	return paytable[number][2] * multiplier;
 }
 
 int lineWin(int &number, int &symbol, int line[5], int multiplier) {
+	if(line[0] == 0) {
+		return 0;
+	}
+
+	if(line[0] == 1) {
+		return 0;
+	}
+
 	int number1 = 0;
 	int number2 = 0;
 	int symbol1 = -1;
@@ -351,6 +359,14 @@ int lineWin(int &number, int &symbol, int line[5], int multiplier) {
 
 	int symbol3 = line[0];
 	for (int i = 0; i < 5; i++) {
+		if (line[i] == 0) {
+			break;
+		}
+
+		if (line[i] == 1) {
+			break;
+		}
+
 		if (line[i] != 2) {
 			symbol3 = line[i];
 			break;
