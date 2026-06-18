@@ -1,17 +1,21 @@
 //============================================================================
 // Name        : Nine-Masks-of-Fire.cpp
 // Author      : Todor Balabanov
-// Version     : 1.0
-// Copyright   : Velbazhd Software LLC, 2022 (c)
+// Version     : 1.0.1
+// Copyright   : Velbazhd Software LLC, 2022-2026 (c)
 // Description : Slot Game Monte Carlo Simulator
 //============================================================================
 
 #include <ctime>
+#include <random>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 
 using namespace std;
+
+static random_device device;
+static mt19937 generator(device()); 
 
 int paytable[10][11] = {
 	{     0,  0,    0,   0,   0,   0,  0,  0,  0,  0,  0, },
@@ -131,9 +135,9 @@ int singleBet = 1;
 
 int totalBet = 20;
 
-long wonMoney = 0L;
+long long wonMoney = 0L;
 
-long lostMoney = 0L;
+long long lostMoney = 0L;
 
 long totalNumberOfGames = 0L;
 
@@ -143,9 +147,9 @@ long totalNumberOfFreeSpinsStarts = 0L;
 
 long totalNumberOfFreeSpinsRestarts = 0L;
 
-long baseGameMoney = 0L;
+long long baseGameMoney = 0L;
 
-long freeSpinsMoney = 0L;
+long long freeSpinsMoney = 0L;
 
 long baseGameMaxWin = 0L;
 
@@ -232,8 +236,10 @@ void print(int view[5][3]) {
 }
 
 void spin(int reels[5][113], int length) {
+	uniform_int_distribution<int> distribution(0, length - 1);
+
 	for (int i = 0, u, m, d; i < 5; i++) {
-		u = rand() % length;
+		u = distribution(generator);
 		m = u + 1;
 		d = u + 2;
 
@@ -294,15 +300,44 @@ int freeSpinsWin() {
 
 int differentSevensLineWin(int &number, int &symbol, int line[5],
 		int multiplier) {
-	if (line[0] != 3 && line[0] != 4 && line[0] != 5) {
+	if (line[0] != 2 && line[0] != 3 && line[0] != 4 && line[0] != 5) {
 		symbol = -1;
 		return 0;
+	}
+
+	if(line[0] == 2) {
+		bool sevens = false;
+		for (int i = 1; i < 5; i++) {
+			if (line[i] == 3 || line[i] == 4 || line[i] == 5) {
+				symbol = line[i];
+				sevens = true;
+				break;
+			} else if(line[i] == 2) {
+				continue;
+			} else {
+				symbol = -1;
+				break;
+			}
+		}
+
+		if(sevens == false) {
+			symbol = -1;
+			return 0;
+		}
+
+		for (int i = 0; i < 5; i++) {
+			if (line[i] == 2 || line[i] == symbol) {
+				line[i] = symbol;
+			} else {
+				break;
+			}
+		}
 	}
 
 	number = 0;
 	bool different = false;
 	for (int i = 0; i < 5; i++) {
-		if (line[i] != 3 && line[i] != 4 && line[i] != 5) {
+		if (line[i] != 3 && line[i] != 4 && line[i] != 5 && line[i] != 2) {
 			break;
 		}
 
@@ -354,8 +389,14 @@ int lineWin(int &number, int &symbol, int line[5], int multiplier) {
 	int number2 = 0;
 	int symbol1 = -1;
 	int symbol2 = -1;
-	int win1 = differentSevensLineWin(number1, symbol1, line, multiplier);
-	int win2 = wildLineWin(number2, symbol2, line, multiplier);
+	int line1[5];
+	int line2[5];
+	for (int i = 0; i < 5; i++) {
+		line1[i] = line[i];
+		line2[i] = line[i];
+	}
+	int win1 = differentSevensLineWin(number1, symbol1, line1, multiplier);
+	int win2 = wildLineWin(number2, symbol2, line2, multiplier);
 
 	int symbol3 = line[0];
 	for (int i = 0; i < 5; i++) {
@@ -374,7 +415,7 @@ int lineWin(int &number, int &symbol, int line[5], int multiplier) {
 	}
 
 	for (int i = 0; i < 5; i++) {
-		if (line[i] == 2) {
+		if (line[i] == 2 || line[i] == symbol3) {
 			line[i] = symbol3;
 		} else {
 			break;
@@ -458,7 +499,7 @@ int linesWin(int multiplier) {
 		if (result > 0 && freeSpinsAmount == 0) {
 			baseGameSymbolsMoney[number][symbol] += result;
 			baseGameSymbolsHitFrequency[number][symbol]++;
-		} else if (win > 0 && freeSpinsAmount > 0) {
+		} else if (result > 0 && freeSpinsAmount > 0) {
 			freeSpinsSymbolsMoney[number][symbol] += result;
 			freeSpinsSymbolsHitFrequency[number][symbol]++;
 		}
@@ -470,8 +511,9 @@ int linesWin(int multiplier) {
 }
 
 void freeSpins(int &amount, int &multiplier) {
-	int index = rand() % 614;
+	static uniform_int_distribution<int> distribution(0, 613);
 
+	int index = distribution(generator);
 	amount = freeSpinsWheel[0][index];
 	multiplier = freeSpinsWheel[1][index];
 }
