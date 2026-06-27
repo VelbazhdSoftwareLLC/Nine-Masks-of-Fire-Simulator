@@ -616,7 +616,7 @@ void singleBaseGame() {
 }
 
 void monteCarloSimulation() {
-	for (long g = 0L; g < 1000000/*00L*/; g++) {
+	for (long g = 0L; g < 10000000/*0L*/; g++) {
 		totalNumberOfGames++;
 		lostMoney += totalBet;
 		singleBaseGame();
